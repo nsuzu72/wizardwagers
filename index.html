@@ -147,7 +147,9 @@
             
             btn.innerText = "DEPLOY"; btn.disabled = false;
             closeModal();
-            // Data will refresh via onValue
+            // Clear input fields
+            document.getElementById('m-title').value = '';
+            document.getElementById('m-opts').value = '';
         };
 
         window.vote = (id, opt) => {
@@ -165,12 +167,24 @@
             }, { onlyOnce: true });
         };
 
-        window.manageMarket = (id, title, opts) => {
+        window.manageMarket = (id, title) => {
+            // Get the market data directly from the event
             const cmd = prompt(`'WIN' or 'DELETE' for "${title}"`);
-            if(cmd?.toUpperCase() === 'DELETE') { if(confirm("Destroy?")) remove(ref(db, `markets/${id}`)); }
+            if(cmd?.toUpperCase() === 'DELETE') { 
+                if(confirm("Destroy?")) remove(ref(db, `markets/${id}`)); 
+            }
             else if(cmd?.toUpperCase() === 'WIN') {
-                const win = prompt(`Winner? (${Object.keys(opts).join(", ")})`);
-                if(opts[win] !== undefined) update(ref(db, `markets/${id}`), { winner: win });
+                // Get the options from Firebase first
+                const marketRef = ref(db, `markets/${id}/options`);
+                onValue(marketRef, (snapshot) => {
+                    const options = snapshot.val();
+                    if (options) {
+                        const win = prompt(`Winner? (${Object.keys(options).join(", ")})`);
+                        if (win && options[win] !== undefined) {
+                            update(ref(db, `markets/${id}`), { winner: win });
+                        }
+                    }
+                }, { onlyOnce: true });
             }
         };
 
@@ -232,7 +246,7 @@
                         <div class="card-content">
                             <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-sub);margin-bottom:10px;">
                                 <span>BY ${(m.creator || 'ANON').toUpperCase()}</span>
-                                ${user === m.creator ? `<span onclick="manageMarket('${id}', '${safeTitle}', ${JSON.stringify(m.options).replace(/'/g, "\\'")})" style="color:var(--blue);cursor:pointer">[ MANAGE ]</span>` : ''}
+                                ${user === m.creator ? `<span onclick="manageMarket('${id}', '${safeTitle}')" style="color:var(--blue);cursor:pointer">[ MANAGE ]</span>` : ''}
                             </div>
                             <h3 style="margin:0 0 10px 0; font-size: 1rem;">${m.title || 'Untitled'}</h3>
                             <div style="font-size:11px; color:${isSet ? 'var(--gold)' : 'var(--blue)'}; font-weight:800; margin-bottom:10px;">
