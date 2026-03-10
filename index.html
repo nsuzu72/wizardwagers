@@ -53,12 +53,12 @@
 <body>
 
     <div id="loader">
-        <img src="logo.png" class="heartbeat">
+        <img src="logo.png" class="heartbeat" alt="logo">
         <p style="font-family:'Prosto One'; color: var(--text-sub); margin-top: 20px;">SUMMONING ARENA...</p>
     </div>
 
     <nav id="navbar" class="hidden">
-        <img src="logo.png" height="35">
+        <img src="logo.png" height="35" alt="logo">
         <div style="display: flex; align-items: center; gap: 15px;">
             <span id="user-display" style="font-weight: 800; color: var(--blue); font-size: 13px;"></span>
             <button class="btn-p" onclick="openModal()" style="font-size: 11px;">+ NEW WAGER</button>
@@ -66,7 +66,7 @@
     </nav>
 
     <div id="auth-screen" class="container hidden" style="text-align: center; padding-top: 10vh;">
-        <img src="logo.png" width="300" style="margin-bottom: 2rem;">
+        <img src="logo.png" width="300" style="margin-bottom: 2rem;" alt="logo">
         <h2>Wizard Identity</h2>
         <input type="text" id="username-input" placeholder="Wizard Name..." style="max-width: 300px;"><br>
         <button class="btn-p" onclick="handleLogin()">Enter WZRDWAGES</button>
@@ -158,12 +158,16 @@
 
         window.vote = (id, opt) => {
             if(votedMap[id]) return alert("Already wagered!");
-            update(ref(db, `markets/${id}/options`), { [opt]: 1 }); // Just to increment
-            const vRef = ref(db, `markets/${id}/options/${opt}`);
-            onValue(vRef, (s) => {
-                update(ref(db, `markets/${id}/options`), { [opt]: (s.val() || 0) + 1 });
-                votedMap[id] = opt;
-                localStorage.setItem('wzrd_voted_map', JSON.stringify(votedMap));
+            
+            // Fix: Properly update the vote count
+            const voteRef = ref(db, `markets/${id}/options/${opt}`);
+            onValue(voteRef, (snapshot) => {
+                const currentCount = snapshot.val() || 0;
+                update(ref(db, `markets/${id}/options`), { [opt]: currentCount + 1 })
+                    .then(() => {
+                        votedMap[id] = opt;
+                        localStorage.setItem('wzrd_voted_map', JSON.stringify(votedMap));
+                    });
             }, { onlyOnce: true });
         };
 
@@ -176,8 +180,9 @@
             }
         };
 
-        if(!user) document.getElementById('auth-screen').classList.remove('hidden');
-        else {
+        if(!user) {
+            document.getElementById('auth-screen').classList.remove('hidden');
+        } else {
             document.getElementById('navbar').classList.remove('hidden');
             document.getElementById('main-content').classList.remove('hidden');
             document.getElementById('user-display').innerText = "@" + user;
@@ -194,12 +199,19 @@
                 Object.keys(data).reverse().forEach(id => {
                     const m = data[id];
                     let mV = 0;
-                    Object.values(m.options).forEach(v => { mV += v; globalV += v; });
+                    
+                    // Calculate total votes for this market
+                    if (m.options) {
+                        Object.values(m.options).forEach(v => { 
+                            if (typeof v === 'number') {
+                                mV += v; 
+                                globalV += v;
+                            }
+                        });
+                    }
                     
                     // Leaderboard calc: If winner set, check who guessed right
-                    if(m.winner) {
-                        // This is a rough simulation since we don't have a user database
-                        // Realistically, the creator gets a 'Rep' point for closing a market
+                    if(m.winner && m.creator) {
                         leaders[m.creator] = (leaders[m.creator] || 0) + 1;
                     }
 
@@ -207,22 +219,32 @@
                     const isSet = m.winner != null;
 
                     let oHtml = '';
-                    for (let o in m.options) {
-                        const pct = mV > 0 ? Math.round((m.options[o] / mV) * 100) : 0;
-                        const win = m.winner === o;
-                        const chosen = myVote === o;
-                        oHtml += `<button class="opt-btn" style="${(myVote || isSet) ? 'opacity:0.6;' : ''} ${win ? 'border:2px solid var(--gold); background:#451a03;' : ''} ${chosen && !win ? 'border:1px solid var(--blue);' : ''}" onclick="${(myVote || isSet) ? '' : `vote('${id}', '${o}')`}">
-                            <span>${win ? '🏆 ' : ''}${o}</span><span>${(myVote || isSet) ? pct+'%' : ''}</span></button>`;
+                    if (m.options) {
+                        for (let o in m.options) {
+                            const voteCount = typeof m.options[o] === 'number' ? m.options[o] : 0;
+                            const pct = mV > 0 ? Math.round((voteCount / mV) * 100) : 0;
+                            const win = m.winner === o;
+                            const chosen = myVote === o;
+                            
+                            // Fix: Create safe string for onclick
+                            const voteFunc = (myVote || isSet) ? '' : `vote('${id}', '${o.replace(/'/g, "\\'")}')`;
+                            
+                            oHtml += `<button class="opt-btn" style="${(myVote || isSet) ? 'opacity:0.6;' : ''} ${win ? 'border:2px solid var(--gold); background:#451a03;' : ''} ${chosen && !win ? 'border:1px solid var(--blue);' : ''}" onclick="${voteFunc}">
+                                <span>${win ? '🏆 ' : ''}${o}</span><span>${(myVote || isSet) ? pct+'%' : ''}</span></button>`;
+                        }
                     }
 
+                    // Fix: Escape title for safe string usage
+                    const safeTitle = m.title ? m.title.replace(/'/g, "\\'") : '';
+                    
                     list.innerHTML += `<div class="card ${isSet ? 'winner-glow' : ''}">
-                        <img src="${m.img}" class="card-img">
+                        <img src="${m.img || 'https://via.placeholder.com/400x200/0f172a/ffffff?text=WZRDWAGES'}" class="card-img" alt="market image">
                         <div class="card-content">
                             <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-sub);margin-bottom:10px;">
-                                <span>BY ${m.creator.toUpperCase()}</span>
-                                ${user === m.creator ? `<span onclick="manageMarket('${id}', '${m.title}', ${JSON.stringify(m.options)})" style="color:var(--blue);cursor:pointer">[ MANAGE ]</span>` : ''}
+                                <span>BY ${(m.creator || 'ANON').toUpperCase()}</span>
+                                ${user === m.creator ? `<span onclick="manageMarket('${id}', '${safeTitle}', ${JSON.stringify(m.options).replace(/'/g, "\\'")})" style="color:var(--blue);cursor:pointer">[ MANAGE ]</span>` : ''}
                             </div>
-                            <h3 style="margin:0 0 10px 0; font-size: 1rem;">${m.title}</h3>
+                            <h3 style="margin:0 0 10px 0; font-size: 1rem;">${m.title || 'Untitled'}</h3>
                             <div style="font-size:11px; color:${isSet ? 'var(--gold)' : 'var(--blue)'}; font-weight:800; margin-bottom:10px;">
                                 ${isSet ? 'WAGER CLOSED' : mV + ' VOTES'} ${myVote ? '• YOU PICKED '+myVote : ''}
                             </div>
