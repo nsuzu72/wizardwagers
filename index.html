@@ -91,8 +91,7 @@
             <h3 style="margin-top: 0;">Create Market</h3>
             <input type="text" id="m-title" placeholder="The Question?">
             <input type="text" id="m-opts" placeholder="Options (Yes, No, Maybe)">
-            <label style="font-size: 11px; color: var(--text-sub);">IMAGE UPLOAD</label>
-            <input type="file" id="m-file" accept="image/*" style="border: 1px dashed var(--border);">
+            <!-- Image upload removed for reliability -->
             <div style="display: flex; gap: 10px;">
                 <button id="deploy-btn" class="btn-p" style="flex: 2;" onclick="deploy()">DEPLOY</button>
                 <button class="btn-p" style="flex: 1; background: #475569;" onclick="closeModal()">X</button>
@@ -102,7 +101,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, onValue, update, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         // --- CONFIG ---
         const firebaseConfig = {
@@ -114,12 +113,11 @@
             appId: "1:714039887526:web:e3db8856fe1370192a5667",
             measurementId: "G-Q7GSN4RR2L"
         };
-        const IMGBB_KEY = "d8064f8aa19b14e1da31fbd3221f492e";
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         let user = localStorage.getItem('wzrd_user');
-        let votedMap = JSON.parse(localStorage.getItem('wzrd_voted_map')) || {}; // {marketId: "OptionName"}
+        let votedMap = JSON.parse(localStorage.getItem('wzrd_voted_map')) || {};
 
         window.handleLogin = () => {
             const val = document.getElementById('username-input').value;
@@ -132,20 +130,13 @@
         window.deploy = async () => {
             const title = document.getElementById('m-title').value;
             const rawOpts = document.getElementById('m-opts').value.split(',');
-            const file = document.getElementById('m-file').files[0];
             const btn = document.getElementById('deploy-btn');
             
             if(!title || rawOpts.length < 1) return alert("Fill fields!");
-            btn.innerText = "UPLOADING..."; btn.disabled = true;
+            btn.innerText = "DEPLOYING..."; btn.disabled = true;
 
-            let imgUrl = 'https://via.placeholder.com/400x200/0f172a/ffffff?text=WZRDWAGES';
-            if (file) {
-                const fd = new FormData(); fd.append("image", file);
-                try {
-                    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, { method: "POST", body: fd });
-                    const d = await res.json(); imgUrl = d.data.url;
-                } catch (e) { console.error(e); }
-            }
+            // Always use placeholder image (no upload)
+            const imgUrl = 'https://via.placeholder.com/400x200/0f172a/ffffff?text=WZRDWAGES';
 
             const options = {};
             rawOpts.forEach(o => { if(o.trim()) options[o.trim()] = 0; });
@@ -153,13 +144,16 @@
             await push(ref(db, 'markets'), {
                 title, creator: user, img: imgUrl, options, winner: null, createdAt: Date.now()
             });
-            location.reload();
+            
+            btn.innerText = "DEPLOY"; btn.disabled = false;
+            closeModal();
+            // Data will refresh via onValue
         };
 
         window.vote = (id, opt) => {
             if(votedMap[id]) return alert("Already wagered!");
             
-            // Fix: Properly update the vote count
+            // Properly increment the vote count
             const voteRef = ref(db, `markets/${id}/options/${opt}`);
             onValue(voteRef, (snapshot) => {
                 const currentCount = snapshot.val() || 0;
@@ -200,7 +194,6 @@
                     const m = data[id];
                     let mV = 0;
                     
-                    // Calculate total votes for this market
                     if (m.options) {
                         Object.values(m.options).forEach(v => { 
                             if (typeof v === 'number') {
@@ -210,7 +203,6 @@
                         });
                     }
                     
-                    // Leaderboard calc: If winner set, check who guessed right
                     if(m.winner && m.creator) {
                         leaders[m.creator] = (leaders[m.creator] || 0) + 1;
                     }
@@ -226,7 +218,6 @@
                             const win = m.winner === o;
                             const chosen = myVote === o;
                             
-                            // Fix: Create safe string for onclick
                             const voteFunc = (myVote || isSet) ? '' : `vote('${id}', '${o.replace(/'/g, "\\'")}')`;
                             
                             oHtml += `<button class="opt-btn" style="${(myVote || isSet) ? 'opacity:0.6;' : ''} ${win ? 'border:2px solid var(--gold); background:#451a03;' : ''} ${chosen && !win ? 'border:1px solid var(--blue);' : ''}" onclick="${voteFunc}">
@@ -234,7 +225,6 @@
                         }
                     }
 
-                    // Fix: Escape title for safe string usage
                     const safeTitle = m.title ? m.title.replace(/'/g, "\\'") : '';
                     
                     list.innerHTML += `<div class="card ${isSet ? 'winner-glow' : ''}">
