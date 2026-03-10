@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WZRDWAGES | Prediction Market</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prosto+One&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --wzrd-blue: #2458f6;
+            --wzrd-green: #00ab6d;
+            --wzrd-red: #e11d48;
+            --bg: #ffffff;
+            --card-bg: #fdfdfd;
+            --border: #eceef2;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, .logo-text { font-family: 'Prosto One', cursive; text-transform: uppercase; }
+
+        /* --- Heartbeat Loader --- */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .heartbeat {
+            width: 280px; /* Adjusted for your 437x222 aspect ratio */
+            height: auto;
+            animation: beat 1.4s ease-in-out infinite;
+        }
+
+        @keyframes beat {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+
+        /* --- Layout --- */
+        nav {
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
+
+        /* --- Bet Cards (Polymarket Style) --- */
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .market-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .market-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+        }
+
+        .card-img { width: 100%; height: 160px; object-fit: cover; border-bottom: 1px solid var(--border); }
+
+        .card-body { padding: 1.25rem; }
+
+        .creator-tag { font-size: 11px; color: var(--text-sub); margin-bottom: 8px; font-weight: 700; }
+
+        .market-title { font-size: 1.1rem; margin: 0 0 1rem 0; line-height: 1.4; height: 3em; overflow: hidden; }
+
+        /* Voting Bars */
+        .odds-container { display: flex; gap: 8px; margin-top: 15px; }
+        
+        .odd-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .odd-btn.yes { color: var(--wzrd-green); }
+        .odd-btn.no { color: var(--wzrd-red); }
+        .odd-btn:hover { background: #f8fafc; }
+
+        /* --- Forms & Modals --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 20px 0;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--wzrd-blue);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .hidden { display: none !important; }
+
+        #auth-screen {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <img src="logo.png" class="heartbeat" alt="WZRDWAGES">
+        <p style="font-family:'Prosto One'; color: #64748b; margin-top: 20px;">SUMMONING MARKETS...</p>
+    </div>
+
+    <nav id="navbar" class="hidden">
+        <img src="logo.png" height="35" alt="WZRDWAGES">
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <span id="user-display" style="font-weight: 600; font-size: 14px;"></span>
+            <button class="btn-primary" onclick="openModal()">Create Market</button>
+        </div>
+    </nav>
+
+    <div id="auth-screen" class="container hidden">
+        <img src="logo.png" width="350" style="margin-bottom: 2rem;">
+        <h2 style="margin-bottom: 5px;">Join the Market</h2>
+        <p style="color: var(--text-sub); margin-bottom: 2rem;">Enter a wizard name to start wagering.</p>
+        <input type="text" id="username-input" placeholder="Wizard Name..." style="max-width: 300px;">
+        <br>
+        <button class="btn-primary" onclick="handleLogin()">Enter WZRDWAGES</button>
+    </div>
+
+    <main id="main-content" class="container hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2 style="margin: 0;">Active Markets</h2>
+        </div>
+        <div id="market-grid" class="market-grid">
+            </div>
+    </main>
+
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <h3 style="margin-top: 0;">Create New Market</h3>
+            <label>Question / Title</label>
+            <input type="text" id="m-title" placeholder="Will it rain in NYC tomorrow?">
+            
+            <label>Market Type</label>
+            <select id="m-type">
+                <option value="Yes/No">Yes / No</option>
+                <option value="Over/Under">Over / Under</option>
+            </select>
+
+            <label>Image URL</label>
+            <input type="text" id="m-img" placeholder="Paste a link to an image...">
+
+            <label>End Date (NY Time)</label>
+            <input type="datetime-local" id="m-expiry">
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-primary" style="flex: 2;" onclick="saveMarket()">Deploy Market</button>
+                <button class="btn-primary" style="flex: 1; background: #94a3b8;" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Loading Logic
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                    initApp();
+                }, 500);
+            }, 2500); // 2.5s "Heartbeat" loading time
+        });
+
+        // 2. Data Management
+        let user = localStorage.getItem('wzrd_user');
+        let markets = JSON.parse(localStorage.getItem('wzrd_markets')) || [
+            {
+                id: 1,
+                creator: 'system',
+                title: 'Will Bitcoin hit $100k before April?',
+                type: 'Yes/No',
+                img: 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=400&q=80',
+                yesVotes: 64,
+                noVotes: 36
+            }
+        ];
+
+        function initApp() {
+            if (user) {
+                showDashboard();
+            } else {
+                document.getElementById('auth-screen').classList.remove('hidden');
+            }
+        }
+
+        function handleLogin() {
+            const val = document.getElementById('username-input').value;
+            if (val.trim()) {
+                user = val.trim();
+                localStorage.setItem('wzrd_user', user);
+                showDashboard();
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('navbar').classList.remove('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+            document.getElementById('user-display').innerText = `🧙‍♂️ ${user}`;
+            renderMarkets();
+        }
+
+        // 3. Market Logic
+        function openModal() { document.getElementById('modal-overlay').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
+
+        function saveMarket() {
+            const newM = {
+                id: Date.now(),
+                creator: user,
+                title: document.getElementById('m-title').value,
+                type: document.getElementById('m-type').value,
+                img: document.getElementById('m-img').value || 'https://via.placeholder.com/400x200?text=WZRDWAGES',
+                expiry: document.getElementById('m-expiry').value,
+                yesVotes: 50,
+                noVotes: 50
+            };
+
+            markets.unshift(newM);
+            localStorage.setItem('wzrd_markets', JSON.stringify(markets));
+            renderMarkets();
+            closeModal();
+        }
+
+        function vote(id, side) {
+            markets = markets.map(m => {
+                if (m.id === id) {
+                    side === 'yes' ? m.yesVotes++ : m.noVotes++;
+                }
+                return m;
+            });
+            localStorage.setItem('wzrd_markets', JSON.stringify(markets));
+            renderMarkets();
+        }
+
+        function renderMarkets() {
+            const grid = document.getElementById('market-grid');
+            grid.innerHTML = '';
+
+            markets.forEach(m => {
+                const total = m.yesVotes + m.noVotes;
+                const yesP = Math.round((m.yesVotes / total) * 100);
+                const noP = 100 - yesP;
+                const labelA = m.type === 'Yes/No' ? 'Yes' : 'Over';
+                const labelB = m.type === 'Yes/No' ? 'No' : 'Under';
+
+                grid.innerHTML += `
+                    <div class="market-card">
+                        <img src="${m.img}" class="card-img">
+                        <div class="card-body">
+                            <div class="creator-tag">BY ${m.creator.toUpperCase()}</div>
+                            <h3 class="market-title">${m.title}</h3>
+                            <div class="odds-container">
+                                <button class="odd-btn yes" onclick="vote(${m.id}, 'yes')">
+                                    <span>${labelA}</span>
+                                    <span>${yesP}%</span>
+                                </button>
+                                <button class="odd-btn no" onclick="vote(${m.id}, 'no')">
+                                    <span>${labelB}</span>
+                                    <span>${noP}%</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
