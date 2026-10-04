@@ -1,287 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>WZRDWAGES | The Arena</title>
-
+<title>WZRDWAGERS | The Arena</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Prosto+One&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-
 <style>
-
 :root{
 --blue:#3b82f6;
 --gold:#fbbf24;
-
 --border:#1e293b;
 --bg:#020617;
 --card-bg:#0f172a;
-
 --text-main:#f8fafc;
 --text-sub:#94a3b8;
 }
-
-*{
-box-sizing:border-box;
--webkit-tap-highlight-color:transparent;
-}
-
-body{
-font-family:'Open Sans',sans-serif;
-background:var(--bg);
-margin:0;
-color:var(--text-main);
-overflow-x:hidden;
-}
-
-h1,h2,h3{
-font-family:'Prosto One';
-text-transform:uppercase;
-}
-
-.container{
-max-width:1100px;
-margin:20px auto;
-padding:0 16px;
-}
-
-/* loader */
-
-#loader{
-position:fixed;
-inset:0;
-background:var(--bg);
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-z-index:9999;
-}
-
-.heartbeat{
-width:200px;
-animation:beat 1.2s infinite;
-}
-
-@keyframes beat{
-0%,100%{transform:scale(1)}
-50%{transform:scale(1.05)}
-}
-
-/* navbar */
-
-nav{
-border-bottom:1px solid var(--border);
-padding:12px 16px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-position:sticky;
-top:0;
-background:rgba(2,6,23,.9);
-backdrop-filter:blur(10px);
-z-index:100;
-}
-
-nav img{
-height:32px;
-}
-
-/* buttons */
-
-.btn-p{
-background:var(--blue);
-border:none;
-padding:12px 18px;
-border-radius:12px;
-font-family:'Prosto One';
-font-size:12px;
-cursor:pointer;
-min-height:44px;
-}
-
-/* stats */
-
-.stats-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:14px;
-margin-bottom:20px;
-}
-
-.stat-box{
-padding:16px;
-border-radius:14px;
-background:rgba(59,130,246,.05);
-border:1px dashed var(--border);
-text-align:center;
-}
-
-.leader-item{
-display:flex;
-justify-content:space-between;
-font-size:12px;
-margin:4px 0;
-font-weight:700;
-}
-
-/* markets */
-
-.market-grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-gap:20px;
-}
-
-/* card */
-
-.card{
-background:var(--card-bg);
-border:1px solid var(--border);
-border-radius:18px;
-overflow:hidden;
-transition:transform .25s ease;
-touch-action:pan-y;
-}
-
-.card.swiping{
-transition:none;
-}
-
-.card-img{
-width:100%;
-height:180px;
-object-fit:cover;
-opacity:.9;
-}
-
-.card-content{
-padding:18px;
-}
-
-/* options */
-
-.opt-btn{
-width:100%;
-padding:14px;
-margin-top:10px;
-border-radius:12px;
-border:1px solid var(--border);
-background:#1e293b;
-color:white;
-font-weight:700;
-cursor:pointer;
-display:flex;
-flex-direction:column;
-gap:6px;
-min-height:44px;
-}
-
-.vote-bar{
-width:100%;
-height:6px;
-background:#020617;
-border-radius:20px;
-overflow:hidden;
-}
-
-.vote-fill{
-height:100%;
-background:var(--blue);
-width:0%;
-transition:width .6s ease;
-}
-
-.vote-fill.pulse{
-animation:pulse .6s ease;
-}
-
-@keyframes pulse{
-0%{transform:scaleY(1)}
-50%{transform:scaleY(1.7)}
-100%{transform:scaleY(1)}
-}
-
-/* modal bottom sheet */
-
-.modal-overlay{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.7);
-display:flex;
-align-items:flex-end;
-justify-content:center;
-padding:0;
-z-index:1000;
-}
-
-.modal{
-background:var(--card-bg);
-width:100%;
-max-width:500px;
-border-radius:20px 20px 0 0;
-padding:24px;
-border-top:2px solid var(--blue);
-animation:sheetUp .3s ease;
-}
-
-@keyframes sheetUp{
-from{transform:translateY(100%)}
-to{transform:translateY(0)}
-}
-
-input{
-width:100%;
-padding:14px;
-margin:10px 0;
-border-radius:12px;
-border:1px solid var(--border);
-background:#020617;
-color:white;
-}
-
-.hidden{
-display:none!important;
-}
-
-.winner-glow{
-border:2px solid var(--gold)!important;
-box-shadow:0 0 20px rgba(251,191,36,.2);
-}
-
-/* mobile */
-
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Open Sans',sans-serif;background:var(--bg);margin:0;color:var(--text-main);overflow-x:hidden}
+h1,h2,h3{font-family:'Prosto One';text-transform:uppercase}
+.container{max-width:1100px;margin:20px auto;padding:0 16px}
+#loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999}
+.heartbeat{width:200px;animation:beat 1.2s infinite}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+nav{border-bottom:1px solid var(--border);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:rgba(2,6,23,.9);backdrop-filter:blur(10px);z-index:100}
+nav img{height:32px}
+.btn-p{background:var(--blue);border:none;padding:12px 18px;border-radius:12px;font-family:'Prosto One';font-size:12px;cursor:pointer;min-height:44px;color:white}
+.btn-s{background:#475569;border:none;padding:12px 18px;border-radius:12px;font-family:'Prosto One';font-size:12px;cursor:pointer;min-height:44px;color:white}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.stat-box{padding:16px;border-radius:14px;background:rgba(59,130,246,.05);border:1px dashed var(--border);text-align:center}
+.market-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:transform .25s ease}
+.card-img{width:100%;height:120px;object-fit:cover;opacity:.9;background:#1e293b}
+.matchup{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--border)}
+.team{display:flex;flex-direction:column;align-items:center;gap:8px;width:45%}
+.team img{width:48px;height:48px}
+.team span{font-size:12px;font-weight:700;text-align:center}
+.vs{font-family:'Prosto One';color:var(--text-sub)}
+.card-content{padding:18px}
+.bet-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.bet-btn{padding:12px;border-radius:12px;border:1px solid var(--border);background:#1e293b;color:white;font-weight:700;cursor:pointer;text-align:center;transition:.2s}
+.bet-btn:hover{border-color:var(--blue)}
+.bet-btn span{display:block;font-size:10px;color:var(--text-sub);margin-bottom:4px}
+.bet-btn b{font-size:14px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center;z-index:1000}
+.modal{background:var(--card-bg);width:100%;max-width:500px;border-radius:20px 20px 0 0;padding:24px;border-top:2px solid var(--blue);animation:sheetUp .3s ease;max-height:90vh;overflow-y:auto}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+input,select{width:100%;padding:14px;margin:8px 0;border-radius:12px;border:1px solid var(--border);background:#020617;color:white}
+.hidden{display:none!important}
+.winner-glow{border:2px solid var(--gold)!important;box-shadow:0 0 20px rgba(251,191,36,.2)}
 @media(max-width:768px){
-
-.market-grid{
-grid-template-columns:1fr;
+.market-grid{grid-template-columns:1fr}
+.stats-grid{grid-template-columns:1fr}
 }
-
-.card-img{
-height:140px;
-}
-
-.stats-grid{
-grid-template-columns:1fr;
-}
-
-#user-display{
-display:none;
-}
-
-}
-
 </style>
-
 </head>
-
 <body>
 
 <div id="loader">
@@ -290,75 +65,100 @@ display:none;
 </div>
 
 <nav id="navbar" class="hidden">
-
 <img src="logo.png">
-
 <div style="display:flex;align-items:center;gap:12px;">
 <span id="user-display" style="font-weight:800;color:var(--blue);font-size:13px;"></span>
-<button class="btn-p" onclick="openModal()">+ NEW WAGER</button>
+<span id="token-display" style="font-weight:800;color:var(--gold);font-size:13px;">0 Tokens</span>
+<button class="btn-s" onclick="openRedeemModal()">REDEEM</button>
+<button class="btn-s" onclick="logout()">LOGOUT</button>
+<button id="admin-btn" class="btn-p hidden" onclick="openAdminPanel()">ADMIN</button>
 </div>
-
 </nav>
 
 <div id="auth-screen" class="container hidden" style="text-align:center;padding-top:10vh;">
-
 <img src="logo.png" width="260" style="margin-bottom:2rem;">
-
-<h2>Wizard Identity</h2>
-
-<input type="text" id="username-input" placeholder="Wizard Name..." style="max-width:280px">
-
-<br>
-
-<button class="btn-p" onclick="handleLogin()">Enter WZRDWAGES</button>
-
+<h2>WZRDWAGERS</h2>
+<p style="color:var(--text-sub);margin-bottom:2rem;">Sign up to receive 10 free tokens.</p>
+<input type="email" id="email-input" placeholder="Email...">
+<input type="password" id="pass-input" placeholder="Password...">
+<button class="btn-p" onclick="emailSignup()">ENTER WITH EMAIL</button>
+<br><br>
+<button class="btn-s" onclick="googleLogin()">ENTER WITH GOOGLE</button>
 </div>
 
 <main id="main-content" class="container hidden">
-
 <div class="stats-grid">
-
 <div class="stat-box">
-<div style="font-size:11px;color:var(--text-sub)">TOTAL ACTION</div>
-<div id="total-votes" style="font-family:'Prosto One';font-size:20px;color:var(--blue)">0</div>
+<div style="font-size:11px;color:var(--text-sub)">YOUR ACTION</div>
+<div id="user-bets-count" style="font-family:'Prosto One';font-size:20px;color:var(--blue)">0</div>
 </div>
-
 <div class="stat-box">
-<div style="font-size:11px;color:var(--text-sub)">ARENA LEADERS</div>
-<div id="leaderboard-mini" style="margin-top:6px"></div>
+<div style="font-size:11px;color:var(--text-sub)">OPEN MARKETS</div>
+<div id="open-markets-count" style="font-family:'Prosto One';font-size:20px;color:var(--gold)">0</div>
 </div>
-
 </div>
-
 <div id="market-list" class="market-grid"></div>
-
 </main>
 
-<div id="modal-overlay" class="modal-overlay hidden">
-
+<!-- Bet Modal -->
+<div id="bet-modal" class="modal-overlay hidden">
 <div class="modal">
-
-<h3>Create Market</h3>
-
-<input id="m-title" placeholder="The Question?">
-<input id="m-opts" placeholder="Options (Yes, No, Maybe)">
-
+<h3 id="bet-modal-title">Place Wager</h3>
+<p style="font-size:12px;color:var(--text-sub)">Current Odds: <span id="bet-odds" style="color:var(--blue)"></span></p>
+<input type="number" id="bet-amount" placeholder="Token amount...">
+<p style="font-size:12px;color:var(--gold)">Potential Payout: <span id="bet-payout">0</span> tokens</p>
 <div style="display:flex;gap:10px">
-
-<button id="deploy-btn" class="btn-p" style="flex:2" onclick="deploy()">DEPLOY</button>
-
-<button class="btn-p" style="flex:1;background:#475569" onclick="closeModal()">X</button>
-
+<button class="btn-p" style="flex:2" onclick="confirmBet()">CONFIRM WAGER</button>
+<button class="btn-s" style="flex:1" onclick="closeBetModal()">X</button>
+</div>
+</div>
 </div>
 
+<!-- Redeem Modal -->
+<div id="redeem-modal" class="modal-overlay hidden">
+<div class="modal">
+<h3>Redeem Code</h3>
+<input type="text" id="code-input" placeholder="Enter code...">
+<div style="display:flex;gap:10px">
+<button class="btn-p" style="flex:2" onclick="redeemCode()">REDEEM</button>
+<button class="btn-s" style="flex:1" onclick="closeRedeemModal()">X</button>
+</div>
+</div>
 </div>
 
+<!-- Admin Modal -->
+<div id="admin-modal" class="modal-overlay hidden">
+<div class="modal">
+<h3>Admin Panel</h3>
+<div id="admin-create">
+<h4 style="color:var(--blue)">Create Game</h4>
+<input type="text" id="admin-opp" placeholder="Opponent Name (e.g., Monroe)">
+<input type="number" id="admin-ou" placeholder="Over/Under Line (e.g., 45.5)">
+<label style="font-size:12px;color:var(--text-sub)">WZRD Win Probability (1-99%)</label>
+<input type="number" id="admin-wzrd-prob" placeholder="60" value="60">
+<button class="btn-p" onclick="createGame()">DEPLOY GAME</button>
+<hr style="border-color:var(--border);margin:20px 0">
+</div>
+<div id="admin-settle">
+<h4 style="color:var(--gold)">Settle Game</h4>
+<select id="admin-settle-select"></select>
+<select id="admin-winner-select">
+<option value="WZRD">WZRD Won</option>
+<option value="OPP">Opponent Won</option>
+</select>
+<select id="admin-ou-select">
+<option value="Over">Over Hit</option>
+<option value="Under">Under Hit</option>
+</select>
+<button class="btn-p" style="background:var(--gold);color:black" onclick="settleGame()">SETTLE & PAYOUT</button>
+</div>
+</div>
 </div>
 
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, onValue, update, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, onSnapshot, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig={
 apiKey:"AIzaSyAQvmIKioJzKfHZNsoVnYbqR0-X49F2PEk",
@@ -369,255 +169,279 @@ messagingSenderId:"714039887526",
 appId:"1:714039887526:web:e3db8856fe1370192a5667"
 };
 
-const app=initializeApp(firebaseConfig);
-const db=getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
 
-let user=localStorage.getItem('wzrd_user');
-let votedMap=JSON.parse(localStorage.getItem('wzrd_voted_map'))||{};
+let currentUser = null;
+let currentUserData = null;
+let selectedBet = null;
+let currentGames = [];
 
-window.handleLogin=()=>{
-const val=document.getElementById('username-input').value;
-if(val){
-localStorage.setItem('wzrd_user',val.trim());
-location.reload();
-}
+// --- AUTH ---
+window.googleLogin = () => signInWithPopup(auth, provider).catch(e => alert(e.message));
+window.emailSignup = () => {
+const email = document.getElementById('email-input').value;
+const pass = document.getElementById('pass-input').value;
+createUserWithEmailAndPassword(auth, email, pass).catch(e => alert(e.message));
 };
+window.logout = () => signOut(auth);
 
-window.openModal=()=>{
-document.getElementById('modal-overlay').classList.remove('hidden');
-document.body.style.overflow='hidden';
-}
-
-window.closeModal=()=>{
-document.getElementById('modal-overlay').classList.add('hidden');
-document.body.style.overflow='';
-}
-
-window.deploy=async()=>{
-
-const title=document.getElementById('m-title').value;
-const rawOpts=document.getElementById('m-opts').value.split(',');
-
-if(!title||rawOpts.length<1)return alert("Fill fields!");
-
-const options={};
-
-rawOpts.forEach(o=>{
-if(o.trim())options[o.trim()]=0;
+onAuthStateChanged(auth, async (user) => {
+if (user) {
+currentUser = user;
+const userRef = doc(db, 'users', user.uid);
+const userSnap = await getDoc(userRef);
+if (!userSnap.exists()) {
+await setDoc(userRef, {
+tokens: 10,
+isAdmin: false,
+displayName: user.email.split('@')[0],
+redeemedCodes: []
 });
-
-await push(ref(db,'markets'),{
-title,
-creator:user,
-img:'https://i.ibb.co/S4QyzrTK/wzrdwagesplchlder.jpg',
-options,
-winner:null,
-createdAt:Date.now()
-});
-
-closeModal();
-
-document.getElementById('m-title').value='';
-document.getElementById('m-opts').value='';
-};
-
-window.vote=(id,opt)=>{
-
-if(votedMap[id])return alert("Already wagered!");
-
-const voteRef=ref(db,`markets/${id}/options/${opt}`);
-
-onValue(voteRef,(snap)=>{
-
-const count=snap.val()||0;
-
-update(ref(db,`markets/${id}/options`),{[opt]:count+1})
-.then(()=>{
-votedMap[id]=opt;
-localStorage.setItem('wzrd_voted_map',JSON.stringify(votedMap));
-});
-
-},{onlyOnce:true});
-
-};
-
-window.manageMarket=(id,title)=>{
-
-const cmd=prompt(`WIN or DELETE for "${title}"`);
-
-if(cmd?.toUpperCase()==='DELETE'){
-if(confirm("Destroy?"))remove(ref(db,`markets/${id}`));
 }
-
-else if(cmd?.toUpperCase()==='WIN'){
-
-const marketRef=ref(db,`markets/${id}/options`);
-
-onValue(marketRef,(snap)=>{
-
-const options=snap.val();
-
-if(options){
-
-const win=prompt(`Winner? (${Object.keys(options).join(", ")})`);
-
-if(win&&options[win]!==undefined){
-update(ref(db,`markets/${id}`),{winner:win});
-}
-
-}
-
-},{onlyOnce:true});
-
-}
-
-};
-
-if(!user){
+listenToUserData();
+} else {
+currentUser = null;
 document.getElementById('auth-screen').classList.remove('hidden');
+document.getElementById('navbar').classList.add('hidden');
+document.getElementById('main-content').classList.add('hidden');
+document.getElementById('loader').classList.add('hidden');
 }
-else{
+});
+
+function listenToUserData() {
+if (!currentUser) return;
+const userRef = doc(db, 'users', currentUser.uid);
+onSnapshot(userRef, (doc) => {
+currentUserData = doc.data();
 document.getElementById('navbar').classList.remove('hidden');
+document.getElementById('auth-screen').classList.add('hidden');
 document.getElementById('main-content').classList.remove('hidden');
-document.getElementById('user-display').innerText="@"+user;
+document.getElementById('loader').classList.add('hidden');
+document.getElementById('user-display').innerText = "@" + currentUserData.displayName;
+document.getElementById('token-display').innerText = currentUserData.tokens + " Tokens";
+
+if (currentUserData.isAdmin) {
+document.getElementById('admin-btn').classList.remove('hidden');
 }
-
-onValue(ref(db,'markets'),(snap)=>{
-
-const data=snap.val();
-const list=document.getElementById('market-list');
-const leaders={};
-let globalV=0;
-
-list.innerHTML='';
-
-if(data){
-
-Object.keys(data).reverse().forEach(id=>{
-
-const m=data[id];
-
-let mV=0;
-
-Object.values(m.options||{}).forEach(v=>{
-mV+=v;
-globalV+=v;
 });
-
-if(m.winner&&m.creator){
-leaders[m.creator]=(leaders[m.creator]||0)+1;
 }
 
-const myVote=votedMap[id];
-const isSet=m.winner!=null;
+// --- MARKETS ---
+const gamesRef = collection(db, 'games');
+const q = query(gamesRef, where("status", "==", "open"));
+onSnapshot(q, (snapshot) => {
+currentGames = [];
+document.getElementById('open-markets-count').innerText = snapshot.size;
+const list = document.getElementById('market-list');
+list.innerHTML = '';
 
-let oHtml='';
-
-for(let o in m.options){
-
-const voteCount=m.options[o];
-const pct=mV>0?Math.round(voteCount/mV*100):0;
-
-const win=m.winner===o;
-const chosen=myVote===o;
-
-const voteFunc=(myVote||isSet)?'':`vote('${id}','${o}')`;
-
-oHtml+=`
-
-<button class="opt-btn"
-style="${(myVote||isSet)?'opacity:.7;':''}
-${win?'border:2px solid var(--gold);background:#451a03;':''}"
-onclick="${voteFunc}">
-
-<div style="display:flex;justify-content:space-between;width:100%">
-<span>${win?'🏆 ':''}${o}</span>
-<span>${(myVote||isSet)?pct+'%':''}</span>
-</div>
-
-<div class="vote-bar">
-<div class="vote-fill ${chosen?'pulse':''}" style="width:${pct}%"></div>
-</div>
-
-</button>
-
-`;
-
+if (snapshot.empty) {
+list.innerHTML = '<p style="color:var(--text-sub);text-align:center">No open markets. Check back soon.</p>';
 }
 
-list.innerHTML+=`
+snapshot.forEach(doc => {
+const game = doc.data();
+game.id = doc.id;
+currentGames.push(game);
 
-<div class="card ${isSet?'winner-glow':''}">
+// Calculate Odds
+const totalWZRD = (game.ghostWzrd || 0) + (game.pool?.WZRD || 0);
+const totalOPP = (game.ghostOpp || 0) + (game.pool?.OPP || 0);
+const totalOU = (game.ghostOver || 0) + (game.pool?.Over || 0) + (game.pool?.Under || 0);
+const totalAll = totalWZRD + totalOPP; // simplified for display
 
-<img src="${m.img}" class="card-img">
+const wzrdOdds = totalAll > 0 ? ((totalWZRD / totalAll) * 100).toFixed(0) : 50;
+const oppOdds = totalAll > 0 ? ((totalOPP / totalAll) * 100).toFixed(0) : 50;
 
+list.innerHTML += `
+<div class="card">
+<div class="matchup">
+<div class="team">
+<img src="logo.png">
+<span>WZRD</span>
+</div>
+<div class="vs">VS</div>
+<div class="team">
+<img src="https://via.placeholder.com/48/1e293b/ffffff?text=OPP">
+<span>${game.opponent}</span>
+</div>
+</div>
 <div class="card-content">
-
-<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-sub);margin-bottom:10px">
-<span>BY ${(m.creator||'ANON').toUpperCase()}</span>
-${user===m.creator?`<span onclick="manageMarket('${id}','${m.title}')" style="color:var(--blue);cursor:pointer">MANAGE</span>`:''}
+<div style="font-size:12px;color:var(--text-sub);margin-bottom:8px;text-align:center">Over/Under: <b style="color:white">${game.overUnder}</b></div>
+<div class="bet-grid">
+<div class="bet-btn" onclick="openBetModal('${game.id}','WZRD')"><span>WIN (${wzrdOdds}%)</span><b>WZRD</b></div>
+<div class="bet-btn" onclick="openBetModal('${game.id}','OPP')"><span>WIN (${oppOdds}%)</span><b>OPP</b></div>
+<div class="bet-btn" onclick="openBetModal('${game.id}','Over')"><span>TOTAL</span><b>OVER</b></div>
+<div class="bet-btn" onclick="openBetModal('${game.id}','Under')"><span>TOTAL</span><b>UNDER</b></div>
 </div>
-
-<h3 style="font-size:1rem;margin-bottom:10px">${m.title}</h3>
-
-<div style="font-size:11px;color:${isSet?'var(--gold)':'var(--blue)'};font-weight:700;margin-bottom:10px">
-${isSet?'WAGER CLOSED':mV+' VOTES'} ${myVote?'• YOU PICKED '+myVote:''}
 </div>
-
-${oHtml}
-
 </div>
-
-</div>
-
 `;
-
+});
 });
 
+// --- BETTING ---
+window.openBetModal = (gameId, type) => {
+selectedBet = { gameId, type };
+const game = currentGames.find(g => g.id === gameId);
+document.getElementById('bet-modal-title').innerText = `Wager: ${type}`;
+
+// Calculate implied odds for display
+const totalWZRD = (game.ghostWzrd || 0) + (game.pool?.WZRD || 0);
+const totalOPP = (game.ghostOpp || 0) + (game.pool?.OPP || 0);
+const totalOver = (game.ghostOver || 0) + (game.pool?.Over || 0);
+const totalUnder = (game.ghostUnder || 0) + (game.pool?.Under || 0);
+
+let impliedProb = 50;
+if (type === 'WZRD') impliedProb = (totalWZRD / (totalWZRD + totalOPP)) * 100;
+if (type === 'OPP') impliedProb = (totalOPP / (totalWZRD + totalOPP)) * 100;
+if (type === 'Over') impliedProb = (totalOver / (totalOver + totalUnder)) * 100;
+if (type === 'Under') impliedProb = (totalUnder / (totalOver + totalUnder)) * 100;
+
+document.getElementById('bet-odds').innerText = `${impliedProb.toFixed(0)}% implied probability`;
+document.getElementById('bet-modal').classList.remove('hidden');
+};
+
+document.getElementById('bet-amount').addEventListener('input', (e) => {
+const val = parseInt(e.target.value) || 0;
+document.getElementById('bet-payout').innerText = (val * 2).toFixed(0); // simplified payout display
+});
+
+window.closeBetModal = () => document.getElementById('bet-modal').classList.add('hidden');
+
+window.confirmBet = async () => {
+const amount = parseInt(document.getElementById('bet-amount').value);
+if (!amount || amount <= 0) return alert("Enter a valid amount.");
+if (amount > currentUserData.tokens) return alert("Not enough tokens.");
+
+const batch = writeBatch(db);
+
+// 1. Deduct tokens from user
+const userRef = doc(db, 'users', currentUser.uid);
+batch.update(userRef, { tokens: currentUserData.tokens - amount });
+
+// 2. Add bet to bets collection
+const betRef = doc(collection(db, 'bets'));
+batch.set(betRef, {
+userId: currentUser.uid,
+gameId: selectedBet.gameId,
+type: selectedBet.type,
+amount: amount,
+paid: false,
+timestamp: Date.now()
+});
+
+// 3. Add to game pool
+const gameRef = doc(db, 'games', selectedBet.gameId);
+const game = currentGames.find(g => g.id === selectedBet.gameId);
+const currentPool = game.pool || { WZRD:0, OPP:0, Over:0, Under:0 };
+currentPool[selectedBet.type] = (currentPool[selectedBet.type] || 0) + amount;
+batch.update(gameRef, { pool: currentPool });
+
+await batch.commit();
+closeBetModal();
+document.getElementById('bet-amount').value = '';
+alert("Wager placed!");
+};
+
+// --- REDEEM ---
+window.openRedeemModal = () => document.getElementById('redeem-modal').classList.remove('hidden');
+window.closeRedeemModal = () => document.getElementById('redeem-modal').classList.add('hidden');
+
+window.redeemCode = async () => {
+const code = document.getElementById('code-input').value.trim();
+const validCodes = { "WIZARDFREE25": 25, "SUPERTOKENS": 10, "RECOVERME": 10 };
+if (!validCodes[code]) return alert("Invalid code.");
+if (currentUserData.redeemedCodes?.includes(code)) return alert("Already redeemed.");
+
+const userRef = doc(db, 'users', currentUser.uid);
+await updateDoc(userRef, {
+tokens: currentUserData.tokens + validCodes[code],
+redeemedCodes: [...(currentUserData.redeemedCodes || []), code]
+});
+closeRedeemModal();
+alert(`Redeemed ${validCodes[code]} tokens!`);
+};
+
+// --- ADMIN ---
+window.openAdminPanel = () => {
+const settleSelect = document.getElementById('admin-settle-select');
+settleSelect.innerHTML = '<option value="">Select Game...</option>';
+currentGames.forEach(g => {
+settleSelect.innerHTML += `<option value="${g.id}">WZRD vs ${g.opponent}</option>`;
+});
+document.getElementById('admin-modal').classList.remove('hidden');
+};
+
+window.createGame = async () => {
+const opp = document.getElementById('admin-opp').value;
+const ou = parseFloat(document.getElementById('admin-ou').value);
+const wzrdProb = parseInt(document.getElementById('admin-wzrd-prob').value);
+
+if (!opp || !ou || !wzrdProb) return alert("Fill all fields.");
+
+// Ghost pool logic (100 total ghost tokens distributed by probability)
+const ghostWzrd = wzrdProb;
+const ghostOpp = 100 - wzrdProb;
+const ghostOver = 50;
+const ghostUnder = 50;
+
+await addDoc(collection(db, 'games'), {
+opponent: opp,
+overUnder: ou,
+status: 'open',
+winner: null,
+ouResult: null,
+pool: { WZRD: 0, OPP: 0, Over: 0, Under: 0 },
+ghostWzrd, ghostOpp, ghostOver, ghostUnder,
+createdAt: Date.now()
+});
+alert("Game deployed!");
+document.getElementById('admin-opp').value = '';
+document.getElementById('admin-ou').value = '';
+};
+
+window.settleGame = async () => {
+const gameId = document.getElementById('admin-settle-select').value;
+if (!gameId) return alert("Select a game.");
+const winner = document.getElementById('admin-winner-select').value;
+const ouResult = document.getElementById('admin-ou-select').value;
+
+const game = currentGames.find(g => g.id === gameId);
+const betsQuery = query(collection(db, 'bets'), where("gameId", "==", gameId));
+const betsSnap = await getDocs(betsQuery);
+
+// Calculate winning pools
+const totalWinningPool = (game.pool[winner] || 0) + (game.pool[ouResult] || 0);
+if (totalWinningPool === 0) {
+await updateDoc(doc(db, 'games', gameId), { status: 'settled', winner, ouResult });
+return alert("Game settled. No winning bets.");
 }
 
-document.getElementById('total-votes').innerText=globalV;
+const batch = writeBatch(db);
 
-const lBox=document.getElementById('leaderboard-mini');
-
-lBox.innerHTML=Object.entries(leaders)
-.sort((a,b)=>b[1]-a[1])
-.slice(0,3)
-.map(l=>`<div class="leader-item"><span>@${l[0]}</span><span>${l[1]} WINS</span></div>`)
-.join('')||"No winners yet...";
-
-setTimeout(()=>document.getElementById('loader').classList.add('hidden'),800);
-
+// Pay out winners
+betsSnap.forEach(docSnap => {
+const bet = docSnap.data();
+if ((bet.type === winner || bet.type === ouResult) && !bet.paid) {
+const userRef = doc(db, 'users', bet.userId);
+// Payout = (userBet / totalWinningPool) * TotalRealPool * 2 (simplified 2x payout for the winning side)
+// To keep it simple and secure without complex CF, we do a flat 2x return on winning bets for now.
+// True pari-mutuel requires cloud functions. For GH Pages, 2x is safe and easy.
+batch.update(userRef, { tokens: increment(bet.amount * 2) });
+batch.update(docSnap.ref, { paid: true });
+}
 });
 
-/* swipe cards */
+batch.update(doc(db, 'games', gameId), { status: 'settled', winner, ouResult });
+await batch.commit();
+alert("Game settled and payouts distributed!");
+};
 
-document.addEventListener("touchstart",e=>{
-const card=e.target.closest(".card");
-if(!card)return;
-card.startX=e.touches[0].clientX;
-});
-
-document.addEventListener("touchmove",e=>{
-const card=e.target.closest(".card");
-if(!card||card.startX===undefined)return;
-
-let dx=e.touches[0].clientX-card.startX;
-dx=Math.max(-60,Math.min(60,dx));
-
-card.style.transform=`translateX(${dx}px)`;
-card.classList.add("swiping");
-});
-
-document.addEventListener("touchend",()=>{
-document.querySelectorAll(".card.swiping").forEach(card=>{
-card.style.transform="";
-card.classList.remove("swiping");
-card.startX=undefined;
-});
-});
-
+import { increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 </script>
-
 </body>
 </html>
